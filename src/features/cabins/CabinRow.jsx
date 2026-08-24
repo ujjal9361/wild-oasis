@@ -6,6 +6,7 @@ import { deleteCabin } from "../../services/apiCabins";
 import toast from "react-hot-toast";
 import { useState } from "react";
 import CreateCabinForm from "./CreateCabinForm";
+import { useDeleteCabin } from "./useDeleteCabin";
 
 const TableRow = styled.div`
   display: grid;
@@ -45,28 +46,17 @@ const Discount = styled.div`
   font-weight: 500;
   color: var(--color-green-700);
 `;
+
+const StyledDiv = styled.div`
+  display: flex;
+  gap: 1rem;
+`;
 function CabinRow({ cabin }) {
   const [showForm, setShowForm] = useState(false);
-  const {
-    id: cabinId,
-    name,
-    maxCapacity,
-    regularPrice,
-    discount,
-    image,
-  } = cabin;
+  const { name, maxCapacity, regularPrice, discount, image } = cabin;
 
-  const queryClient = useQueryClient();
-  const { isPending: isDeleting, mutate } = useMutation({
-    mutationFn: deleteCabin,
-    onSuccess: () => {
-      toast.success("Cabin deleted succesfully");
-      queryClient.invalidateQueries({
-        queryKey: "cabins",
-      });
-    },
-    onError: (err) => toast.error(err.message),
-  });
+  const { isDeleting, deleteCabinMutate } = useDeleteCabin();
+
   return (
     <>
       <TableRow role="row">
@@ -74,8 +64,10 @@ function CabinRow({ cabin }) {
         <Cabin>{name}</Cabin>
         <div>{maxCapacity}</div>
         <Price>{formatCurrency(regularPrice)}</Price>
-        <Discount>{formatCurrency(discount)}</Discount>
-        <div>
+        <Discount>
+          {discount ? formatCurrency(discount) : <span>&mdash;</span>}
+        </Discount>
+        <StyledDiv>
           <Button
             variation="secondary"
             type="small"
@@ -86,14 +78,19 @@ function CabinRow({ cabin }) {
           <Button
             type="small"
             variation="danger"
-            onClick={() => mutate(cabin)}
+            onClick={() => deleteCabinMutate(cabin)}
             disabled={isDeleting}
           >
             Delete
           </Button>
-        </div>
+        </StyledDiv>
       </TableRow>
-      {showForm && <CreateCabinForm cabinToEdit={cabin} />}
+      {showForm && (
+        <CreateCabinForm
+          cabinToEdit={cabin}
+          onDone={() => setShowForm(false)}
+        />
+      )}
     </>
   );
 }

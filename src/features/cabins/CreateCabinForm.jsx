@@ -9,9 +9,10 @@ import FileInput from "../../ui/FileInput";
 import Textarea from "../../ui/Textarea";
 import FormRow from "../../ui/FormRow";
 
-import { createOrEditCabin } from "../../services/apiCabins";
+import { useCreateCabin } from "./useCreateCabin";
+import { useEditCabin } from "./useEditCabin";
 
-function CreateCabinForm({ cabinToEdit = {} }) {
+function CreateCabinForm({ cabinToEdit = {}, onDone }) {
   const { id: editId, ...editValues } = cabinToEdit;
   const isEditSession = Boolean(editId);
 
@@ -20,30 +21,8 @@ function CreateCabinForm({ cabinToEdit = {} }) {
   });
   const { errors } = formState;
 
-  const queryClient = useQueryClient();
-
-  const { mutate: createCabinMutate, isPending: isCreating } = useMutation({
-    mutationFn: createOrEditCabin,
-    onSuccess: () => {
-      toast.success("New Cabin created succesfully");
-      queryClient.invalidateQueries({
-        queryKey: "cabins",
-      });
-      reset();
-    },
-    onError: (err) => toast.error(err.message),
-  });
-  const { mutate: editCabinMutate, isPending: isEditing } = useMutation({
-    mutationFn: ({ newCabinData, id }) => createOrEditCabin(newCabinData, id),
-    onSuccess: () => {
-      toast.success("New Cabin edited succesfully");
-      queryClient.invalidateQueries({
-        queryKey: "cabins",
-      });
-      reset();
-    },
-    onError: (err) => toast.error(err.message),
-  });
+  const { isCreating, createCabinMutate } = useCreateCabin();
+  const { isEditing, editCabinMutate } = useEditCabin();
 
   const isLoading = isCreating || isEditing;
 
@@ -51,12 +30,25 @@ function CreateCabinForm({ cabinToEdit = {} }) {
     const image =
       typeof formData.image === "string" ? formData.image : formData.image[0];
     if (isEditSession) {
-      editCabinMutate({
-        newCabinData: { ...formData, image, oldImage: editValues.image },
-        id: editId,
-      });
+      editCabinMutate(
+        {
+          newCabinData: { ...formData, image, oldImage: editValues.image },
+          id: editId,
+        },
+        {
+          onSuccess: (updatedCabin) => {
+            reset(updatedCabin);
+            onDone?.();
+          },
+        },
+      );
     } else {
-      createCabinMutate({ ...formData, image: formData.image[0] });
+      createCabinMutate(
+        { ...formData, image: formData.image[0] },
+        {
+          onSuccess: () => reset(),
+        },
+      );
     }
   }
   function onError(errors) {
