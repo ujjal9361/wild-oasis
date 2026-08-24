@@ -24,7 +24,7 @@ export const getToday = function (options = {}) {
 };
 
 export const formatCurrency = (value) =>
-  `Rs. ${Number(value).toLocaleString("en-US", {
+  `Rs.${Number(value).toLocaleString("en-US", {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   })}`;
