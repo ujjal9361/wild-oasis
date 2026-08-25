@@ -1,12 +1,10 @@
 import styled from "styled-components";
 import { formatCurrency } from "../../utils/helpers";
-import Button from "../../ui/Button";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteCabin } from "../../services/apiCabins";
-import toast from "react-hot-toast";
 import { useState } from "react";
 import CreateCabinForm from "./CreateCabinForm";
 import { useDeleteCabin } from "./useDeleteCabin";
+import { HiPencil } from "react-icons/hi";
+import { HiTrash } from "react-icons/hi2";
 
 const TableRow = styled.div`
   display: grid;
@@ -68,21 +66,15 @@ function CabinRow({ cabin }) {
           {discount ? formatCurrency(discount) : <span>&mdash;</span>}
         </Discount>
         <StyledDiv>
-          <Button
-            variation="secondary"
-            type="small"
-            onClick={() => setShowForm((showForm) => !showForm)}
-          >
-            Edit
-          </Button>
-          <Button
-            type="small"
-            variation="danger"
+          <button onClick={() => setShowForm((showForm) => !showForm)}>
+            <HiPencil />
+          </button>
+          <button
             onClick={() => deleteCabinMutate(cabin)}
             disabled={isDeleting}
           >
-            Delete
-          </Button>
+            <HiTrash />
+          </button>
         </StyledDiv>
       </TableRow>
       {showForm && (
