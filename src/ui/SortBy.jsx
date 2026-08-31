@@ -3,7 +3,7 @@ import Select from "./Select";
 
 function SortBy({ options }) {
   const [searchParams, setSearchParams] = useSearchParams();
-  const sortBy = searchParams.get("sortBy") || "regularPrice-asc";
+  const sortBy = searchParams.get("sortBy") || "startDate-desc";
   function handleChange(e) {
     searchParams.set("sortBy", e.target.value);
     setSearchParams(searchParams);
