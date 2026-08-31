@@ -6,6 +6,7 @@ function SortBy({ options }) {
   const sortBy = searchParams.get("sortBy") || "startDate-desc";
   function handleChange(e) {
     searchParams.set("sortBy", e.target.value);
+    if (searchParams.get("page")) searchParams.set("page", 1);
     setSearchParams(searchParams);
   }
   return (
