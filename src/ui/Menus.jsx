@@ -100,25 +100,17 @@ function Toggle({ id }) {
   );
 }
 function List({ id, children }) {
-  const { openId, position, setPosition, toggleRef, close } =
-    useContext(MenuContext);
+  const { openId, position, toggleRef, close } = useContext(MenuContext);
 
   const ref = useOutsideClick(close);
 
   useEffect(() => {
     if (openId !== id || !toggleRef.current) return;
 
-    function handleScroll() {
-      const rect = toggleRef.current.getBoundingClientRect();
-      setPosition({
-        x: Math.round(window.innerWidth - rect.width - rect.x),
-        y: Math.round(rect.y + rect.height + 8),
-      });
-    }
-
-    document.addEventListener("scroll", handleScroll, true);
-    return () => document.removeEventListener("scroll", handleScroll, true);
-  }, [openId, id, setPosition, toggleRef]);
+    // Repositioning on every scroll event is janky, so just close instead
+    document.addEventListener("scroll", close, true);
+    return () => document.removeEventListener("scroll", close, true);
+  }, [openId, id, close, toggleRef]);
 
   if (openId !== id) return null;
   return createPortal(
