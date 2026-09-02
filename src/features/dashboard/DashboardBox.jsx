@@ -11,6 +11,10 @@ const DashboardBox = styled.div`
   display: flex;
   flex-direction: column;
   gap: 2.4rem;
+
+  /* Grid/flex items default to min-width/min-height: auto, which stops them shrinking below their content's size */
+  min-width: 0;
+  min-height: 0;
 `;
 
 export default DashboardBox;
