@@ -10,7 +10,7 @@ export function useEditCabin() {
     onSuccess: () => {
       toast.success("New Cabin edited succesfully");
       queryClient.invalidateQueries({
-        queryKey: "cabins",
+        queryKey: ["cabins"],
       });
     },
     onError: (err) => toast.error(err.message),
