@@ -15,6 +15,8 @@ import { eachDayOfInterval, format, isSameDay, subDays } from "date-fns";
 
 const StyledSalesChart = styled(DashboardBox)`
   grid-column: 1 / -1;
+  /* Explicitly placed in the last row, below the Today's Activities/DurationChart row */
+  grid-row: 3;
 
   /* Hack to change grid line colors */
   & .recharts-cartesian-grid-horizontal line,

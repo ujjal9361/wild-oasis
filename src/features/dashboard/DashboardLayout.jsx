@@ -6,11 +6,12 @@ import Stats from "./Stats";
 import useCabins from "../cabins/useCabins";
 import SalesChart from "./SalesChart";
 import DurationChart from "./DurationChart";
+import TodayActivity from "../check-in-out/TodayActivity";
 
 const StyledDashboardLayout = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
-  grid-template-rows: auto 34rem auto;
+  grid-template-rows: auto 34rem 34rem;
   gap: 2.4rem;
 `;
 
@@ -18,7 +19,6 @@ function DashboardLayout() {
   const { bookings, isLoading: isLoadingBookings } = useRecentBookings();
   const {
     isLoading: isLoadingStays,
-    stays,
     confirmedStays,
     numberOfDays,
   } = useRecentStays();
@@ -33,10 +33,9 @@ function DashboardLayout() {
         numberOfDays={numberOfDays}
         cabinCount={cabins.length}
       />
-      <div>Today's Activities</div>
+      <TodayActivity />
       <DurationChart confirmedStays={confirmedStays} />
       <SalesChart bookings={bookings} numberOfDays={numberOfDays} />
-      <div>Chart sales</div>
     </StyledDashboardLayout>
   );
 }
